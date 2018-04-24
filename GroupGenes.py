@@ -81,7 +81,7 @@ def main():
     pipelines = ['Muse', 'Mutect', 'Somatic_Sniper', 'Varscan']
     mafDir = "MafArchive/"
     geneIndexFile = "geneIndex.pkl"
-    if resetIndex or not os.path.exists(geneIndex):
+    if resetIndex or not os.path.exists(geneIndexFile):
         createGeneIndex(mafDir, cancerTypes, pipelines, geneIndexFile)
         associateGenePDB(geneIndexFile)
     if resetPdb:
