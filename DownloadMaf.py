@@ -111,7 +111,7 @@ def main():
     arg_parser.add_argument('--reset', action='store_true',help = 'redownload existing files?')
     #Cancer type and pipeline data, maybe allow user to only download a subset?
     CancerTypes = ['BRCA', 'GBM', 'OV', 'LUAD', 'UCEC', 'KIRC',
-                    'HNSC', 'LGG', 'THCA', 'LUSC', 'PRAD', 'SKCM'
+                    'HNSC', 'LGG', 'THCA', 'LUSC', 'PRAD', 'SKCM',
                     'COAD', 'STAD', 'BLCA', 'LIHC', 'CESC', 'KIRP',
                     'SARC', 'LAML', 'ESCA', 'PAAD', 'PCPG', 'READ',
                     'TGCT', 'THYM', 'THYM', 'KICH', 'ACC', 'MESO',
