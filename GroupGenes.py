@@ -41,7 +41,8 @@ def getUniprot(Entrez, split = True):
 
     data = urllib.parse.urlencode(params)
     request = urllib.request.Request(url, data.encode("utf-8"))
-    contact = "aa@uchicago.edu" # Please set a contact email address here to help us debug in case of problems (see https://www.uniprot.org/help/privacy).
+    contact = "aa@uchicago.edu" 
+    # Please set a contact email address here to help us debug in case of problems (see https://www.uniprot.org/help/privacy).
     request.add_header('User-Agent', 'Python %s' % contact)
     response = urllib.request.urlopen(request)
     page = response.read(200000)
@@ -58,9 +59,9 @@ def mapUniProt(geneIndexFile):
     #fills in the uniProt column of the geneIndex dataframe by calling the uniprot mapping server
     tqdm.pandas(desc="mapping entrez to uniProt")
     indexFrame = pd.read_pickle(geneIndexFile)
-    indexFrame['uniProt'] = indexFrame['Entrez_Gene_Id'].progress_apply(lambda entrez: getUniProt(entrez))
+    indexFrame['uniProt'] = indexFrame['Entrez_Gene_Id'].progress_apply(lambda entrez: getUniprot(entrez))
 
-def associateGenePDB(geneIndexFile):
+def associatePDB(geneIndexFile):
     #associates the entrezGeneIds with a sequence of pdb files
     #use a greedy algorithm to determine which sequences to use
     pass
@@ -70,22 +71,32 @@ def main():
     #Parse Args
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--resetIndex', action='store_true',help = 'regenerate the index?')
+    arg_parser.add_argument('--resetUniProt', action='store_true',help = 'call mapping servers to re-associate entrez with Uniprot?')
     arg_parser.add_argument('--resetPdb', action='store_true',help = 'ping servers to re-associate geneIds with pdb files')
-
+    
     cancerTypes = ['BRCA', 'GBM', 'OV', 'LUAD', 'UCEC', 'KIRC',
                     'HNSC', 'LGG', 'THCA', 'LUSC', 'PRAD', 'SKCM'
                     'COAD', 'STAD', 'BLCA', 'LIHC', 'CESC', 'KIRP',
                     'SARC', 'LAML', 'ESCA', 'PAAD', 'PCPG', 'READ',
                     'TGCT', 'THYM', 'THYM', 'KICH', 'ACC', 'MESO',
                     'UVM', 'DLBC', 'UCS', 'CHOL']
+
+    #######DEBUG#####
+    cancerTypes = cancerTypes[1]
+    #######DEBUG#####
+    
     pipelines = ['Muse', 'Mutect', 'Somatic_Sniper', 'Varscan']
     mafDir = "MafArchive/"
     geneIndexFile = "geneIndex.pkl"
     if resetIndex or not os.path.exists(geneIndexFile):
         createGeneIndex(mafDir, cancerTypes, pipelines, geneIndexFile)
-        associateGenePDB(geneIndexFile)
-    if resetPdb:
-        associateGenePDB(geneIndexFile)
+        mapUniProt(geneIndexFile)
+        associatePDB(geneIndexFile)
+    elif resetUniProt:
+        mapUniProt(geneIndexFile)
+        associatePDB(geneIndexFile)
+    elif resetPdb:
+        associatePDB(geneIndexFile)
     
     
 
