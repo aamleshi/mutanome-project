@@ -103,7 +103,7 @@ def downloadMaf(filepath, cancerType, pipeline):
     f.write(zipedFile.read())
     zipedFile.close()
     f.close()
-    os.remove(filepath+".gz"l)
+    os.remove(filepath+".gz")
 
 def main():
     #Parse Args
